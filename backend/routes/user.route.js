@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model"); // Import the User model
 const { body, validationResult } = require("express-validator"); // Import express-validator for validation
+const checkUserValidity = require("../middleware/authentication");
 
 const UserRouter = express.Router();
 
@@ -28,7 +29,7 @@ UserRouter.post(
 
     try {
       // Check if the user already exists
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ username });
       if (user) {
         return res.status(400).json({ message: "User already exists" });
       }
@@ -70,18 +71,18 @@ UserRouter.post(
     }
 
     const { username, password } = req.body;
-
+    console.log(username, password);
     try {
       // Find the user by username
       const user = await User.findOne({ username });
       if (!user) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
-
+      console.log(user);
       // Check if the provided password matches the stored hashed password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(200).json({ message: "Invalid password" });
       }
 
       // Generate a JWT token for authentication
@@ -97,5 +98,26 @@ UserRouter.post(
     }
   }
 );
+
+UserRouter.get("/getUser", checkUserValidity, async (req, res) => {
+  try {
+    // Since the user has already been attached to req in the middleware
+    const user = req.user;
+
+    // Optionally, you can create a response object to exclude sensitive data
+    const userDetails = {
+      id: user._id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      username: user.username,
+      email: user.email,
+      // Add any other fields you want to send
+    };
+
+    return res.status(200).send(userDetails); // Send user details as a response
+  } catch (error) {
+    return res.status(500).send({ message: "Error fetching user details", error: error.message });
+  }
+});
 
 module.exports = { UserRouter };

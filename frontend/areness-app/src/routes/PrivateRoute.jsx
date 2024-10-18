@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 const isAuthenticated = () => {
   // This function should return true if the user is authenticated, false otherwise.
   // For example, you could check a token in localStorage:
-  return localStorage.getItem('user') ? true : false; // Replace with your actual auth logic
+  return localStorage.getItem('token') ? true : false; // Replace with your actual auth logic
 };
 
 const PrivateRoute = ({ children }) => {

@@ -11,19 +11,30 @@ import {
   Image,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Create motion components for animations
-const MotionFlex = motion(Flex);
-const MotionStack = motion(Stack);
-const MotionImage = motion(Image);
+const MotionFlex = motion.create(Flex);
+const MotionStack = motion.create(Stack);
+const MotionImage = motion.create(Image);
 
 export default function Login() {
   // State for form fields and error messages
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const nav = useNavigate();
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    if (token) {
+      nav("/");
+    }
+  }, [token]);
 
   // Regular expressions for validation
   const usernameRegex = /^[a-zA-Z0-9_]{3,}$/; // Alphanumeric and underscore, min 3 characters
@@ -48,8 +59,24 @@ export default function Login() {
       return;
     }
 
-    // Proceed with login logic (e.g., API call)
-    console.log("Login successful");
+    const data = {
+      username,
+      password,
+    };
+
+    const login = async () => {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASEURL}/users/login`,
+        data
+      );
+      console.log(response);
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+
+        window.location.href = "/";
+      }
+    };
+    login();
   };
 
   return (
@@ -59,16 +86,16 @@ export default function Login() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      backgroundImage={
-        "https://s3-alpha-sig.figma.com/img/598b/e375/6c1c4a778dc678d9b5c27f1c8875582d?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JMcw1r2Q4XMUmPVN7BMkpYBcvW9a182joUhR7-ChMqYiRWhlRlGFW3lVR~Ovb8fIs0ir0IhPuB4WrosmDNpPF~duv6eF7UXt2TtR-NHQS7Tv26cVHuuCXexxnBXkNAG-G5dHUQoDyehGo1GV~ug-sX~uAcak0Y9qvIZAHodhYp4KdsF53sUfGqsnYJq3sMsyft0JAtTm3Zinjf8dCmglGCy1r~rRNtpdx8-o~TIP~EJ2ry2PELHv6w~Do3hX1e6PuuyqaI8Mry-r1tcwUrd4IeRrqsrUHeKp-DsAgZfH2oFaIlLUcIiCipwtySLzlNGkb9ZD~AfpciC4HjDoHdMFgg__"
-      }
+      // backgroundImage={
+      //   "https://s3-alpha-sig.figma.com/img/598b/e375/6c1c4a778dc678d9b5c27f1c8875582d?Expires=1730073600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JMcw1r2Q4XMUmPVN7BMkpYBcvW9a182joUhR7-ChMqYiRWhlRlGFW3lVR~Ovb8fIs0ir0IhPuB4WrosmDNpPF~duv6eF7UXt2TtR-NHQS7Tv26cVHuuCXexxnBXkNAG-G5dHUQoDyehGo1GV~ug-sX~uAcak0Y9qvIZAHodhYp4KdsF53sUfGqsnYJq3sMsyft0JAtTm3Zinjf8dCmglGCy1r~rRNtpdx8-o~TIP~EJ2ry2PELHv6w~Do3hX1e6PuuyqaI8Mry-r1tcwUrd4IeRrqsrUHeKp-DsAgZfH2oFaIlLUcIiCipwtySLzlNGkb9ZD~AfpciC4HjDoHdMFgg__"
+      // }
       backgroundSize="cover" // Ensure the image covers the stack
       backgroundPosition="center" // Center the image
       position={"relative"}
     >
       {/* Form Section */}
       <Flex
-        position="absolute"
+        position=""
         top={0}
         left={0}
         right={0}
@@ -87,10 +114,8 @@ export default function Login() {
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 120 }}
         border={"2px solid red"}
-        
-        
       >
-        <Stack spacing={4} w={"full"} maxW={"md"} border={"2px solid red"} >
+        <Stack spacing={4} w={"full"} maxW={"md"} border={"2px solid red"}>
           <Heading fontSize={"2xl"}>Sign in to your account</Heading>
           <form onSubmit={handleSubmit}>
             <FormControl id="username" isInvalid={!!error}>
@@ -131,6 +156,7 @@ export default function Login() {
       </MotionFlex>
 
       {/* Image Section */}
+
       <MotionFlex
         flex={1}
         initial={{ opacity: 0, scale: 0.8 }}
