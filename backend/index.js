@@ -19,7 +19,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  return res.status(200).send({ message: "Hello World" });
+  return res.status(200).send({ message: "API is working fine" });
 });
 
 app.use("/users", UserRouter);
