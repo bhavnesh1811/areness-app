@@ -22,14 +22,16 @@ import {
   FiStar,
   FiSettings,
   FiMenu,
+  FiLogOut,
 } from "react-icons/fi";
 
 const LinkItems = [
   { name: "DashBoard", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
+  { name: "Vital Task", icon: FiTrendingUp },
+  { name: "My Tasks", icon: FiCompass },
   { name: "Favourites", icon: FiStar },
   { name: "Settings", icon: FiSettings },
+  { name: "Logout", icon: FiLogOut },
 ];
 
 export default function Sidebar({ user }) {
@@ -64,6 +66,13 @@ export default function Sidebar({ user }) {
 }
 
 const SidebarContent = ({ onClose, user, ...rest }) => {
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
+
+
   return (
     <Center
       bg={useColorModeValue("#FF6767", "gray.900")}
@@ -104,9 +113,21 @@ const SidebarContent = ({ onClose, user, ...rest }) => {
       </Text>
       <Text color={"white"}>{user?.email}</Text>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
+        <React.Fragment key={link.name}>
+          {link.name === "Logout" ? (
+            <button
+              onClick={handleLogout}
+              style={{display:"flex",justifyContent:"center",color:"#FFFFFF",alignItems:"center",marginLeft:"20px"}}
+            >
+              {link.icon && (
+                <link.icon className="mr-2 text-gray-600" size={20} />
+              )}
+              Logout
+            </button>
+          ) : (
+            <NavItem icon={link.icon}>{link.name}</NavItem>
+          )}
+        </React.Fragment>
       ))}
     </Center>
   );
