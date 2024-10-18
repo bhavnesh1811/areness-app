@@ -6,7 +6,6 @@ import {
   IconButton,
   Text,
   useBreakpointValue,
-  Spacer,
 } from "@chakra-ui/react";
 import { FiSearch, FiBell, FiCalendar } from "react-icons/fi";
 
@@ -70,6 +69,7 @@ const Navbar = () => {
             color="white"
             background={"#FF7373"}
           />
+          {/* <Text fontSize="md">{new Date().getUTCDay()}</Text> */}
           <Text fontSize="md">{new Date().toLocaleDateString()}</Text>
         </Flex>
       </Box>

@@ -13,8 +13,10 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { FaGoogle } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FiFacebook, FiX } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
 
 // Create motion components for animations
 const MotionFlex = motion.create(Flex);
@@ -113,9 +115,8 @@ export default function Login() {
         initial={{ x: "-100vw" }}
         animate={{ x: 0 }}
         transition={{ type: "spring", stiffness: 120 }}
-        border={"2px solid red"}
       >
-        <Stack spacing={4} w={"full"} maxW={"md"} border={"2px solid red"}>
+        <Stack spacing={4} w={"full"} maxW={"md"}>
           <Heading fontSize={"2xl"}>Sign in to your account</Heading>
           <form onSubmit={handleSubmit}>
             <FormControl id="username" isInvalid={!!error}>
@@ -152,6 +153,22 @@ export default function Login() {
               </Button>
             </Stack>
           </form>
+
+          <Flex
+            margin={"auto"}
+            justifyItems={"center"}
+            alignItems={"center"}
+            gap={"4px"}
+          >
+            <Text mr={2}>Or login with</Text>
+            <FiFacebook />
+            <FaGoogle />
+            <FiX />
+          </Flex>
+
+          <Text mr={4}>
+            Dont have account? <Link to="/register" style={{ color: "blue" }}>Create One</Link>
+          </Text>
         </Stack>
       </MotionFlex>
 

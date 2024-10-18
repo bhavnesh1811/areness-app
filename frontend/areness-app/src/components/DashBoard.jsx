@@ -33,8 +33,8 @@ const DashBoard = () => {
       <Navbar />
 
       <Flex background={"F5F8FF"}>
-        <Sidebar />
-        <Box>
+        <Sidebar user={user} />
+        <Box mt={"20px"}>
           <Flex>Welcome Back, {user?.username}</Flex>
         </Box>
       </Flex>

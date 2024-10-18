@@ -13,7 +13,7 @@ import {
   DrawerContent,
   useDisclosure,
   Avatar,
-  Center
+  Center,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -25,22 +25,22 @@ import {
 } from "react-icons/fi";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome },
+  { name: "DashBoard", icon: FiHome },
   { name: "Trending", icon: FiTrendingUp },
   { name: "Explore", icon: FiCompass },
   { name: "Favourites", icon: FiStar },
   { name: "Settings", icon: FiSettings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box minH="100vh" mt={"20px"}>
       <SidebarContent
         onClose={onClose}
+        user={user}
         display={{ base: "none", md: "block" }}
-        
       />
       <Drawer
         isOpen={isOpen}
@@ -49,10 +49,9 @@ export default function Sidebar() {
         returnFocusOnClose={false}
         onOverlayClick={onClose}
         size="full"
-        
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent onClose={onClose} user={user} />
         </DrawerContent>
       </Drawer>
       {/* Mobile nav */}
@@ -64,9 +63,9 @@ export default function Sidebar() {
   );
 }
 
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ onClose, user, ...rest }) => {
   return (
-    <Box
+    <Center
       bg={useColorModeValue("#FF6767", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -75,7 +74,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex h="20" alignItems="center" mx="16" justifyContent="space-between">
         <Center>
           <Avatar
             size={"xl"}
@@ -100,12 +99,16 @@ const SidebarContent = ({ onClose, ...rest }) => {
 
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
+      <Text color={"white"}>
+        {user?.firstname} {user?.lastname}
+      </Text>
+      <Text color={"white"}>{user?.email}</Text>
       {LinkItems.map((link) => (
         <NavItem key={link.name} icon={link.icon}>
           {link.name}
         </NavItem>
       ))}
-    </Box>
+    </Center>
   );
 };
 
@@ -116,6 +119,7 @@ const NavItem = ({ icon, children, ...rest }) => {
       href="#"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
+      color={"white"}
     >
       <Flex
         align="center"
@@ -125,8 +129,8 @@ const NavItem = ({ icon, children, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
-          color: "white",
+          bg: "white",
+          color: "#FF7373",
         }}
         {...rest}
       >
@@ -135,7 +139,8 @@ const NavItem = ({ icon, children, ...rest }) => {
             mr="4"
             fontSize="16"
             _groupHover={{
-              color: "white",
+              bg: "white",
+              color: "#FF7373",
             }}
             as={icon}
           />
