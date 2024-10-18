@@ -1,9 +1,9 @@
 require("dotenv").config(); // Load environment variables
 
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors"); // Import the CORS package
 const { connection } = require("./Configs/db");
+const {UserRouter} = require("./routes/user.route.js");
 
 // Create an instance of express
 const app = express();
@@ -17,6 +17,8 @@ app.use(
     origin: "*", // This allows requests from any origin. Use specific origins for security.
   })
 );
+
+app.use("/users", UserRouter);
 
 // Get the PORT from .env or use 3000 by default
 const PORT = process.env.PORT || 3000;
