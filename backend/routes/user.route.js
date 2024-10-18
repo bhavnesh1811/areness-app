@@ -29,7 +29,9 @@ UserRouter.post(
 
     try {
       // Check if the user already exists
-      let user = await User.findOne({ username });
+      let user = await User.findOne({
+        $or: [{ username }, { email }]
+      });
       if (user) {
         return res.status(400).json({ message: "User already exists" });
       }
@@ -71,7 +73,6 @@ UserRouter.post(
     }
 
     const { username, password } = req.body;
-    console.log(username, password);
     try {
       // Find the user by username
       const user = await User.findOne({ username });
